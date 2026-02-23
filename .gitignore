@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Testing / coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage/
+.pytest_cache/
+
+# Type checking
+.mypy_cache/
+
+# Virtual environments
+.venv
+env/
+venv/
+# Specific to FastAPI tutorial recommendations
+.env
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Sensitive information (add files with secrets here)
+# For example, if you use a specific file for API keys:
+# secrets.json
+# config.ini
