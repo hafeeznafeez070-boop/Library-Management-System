@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Body
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class Book:
-    id:int
-    title:str
-    author:str
-    description:str
-    rating:int
+    id:Optional[int] = None 
+    title:str = Field(min_length=3, max_length=25)
+    author:str = Field(min_length=3,max_length=20)
+    description:str = Field(min_length=2, max_length=100)
+    rating:int = Field(gt=0,lt=6)
 
     def __init__(self,id,title,author,description,rating):
         self.id = id
@@ -32,6 +33,17 @@ class BookRequest(BaseModel):
     description:str
     rating:int
 
+    model_config = {
+        "json_schema_extra":{
+            "example":{
+                "title":"CS",
+                "author":"Sipn",
+                "description":"A basic book on Cs",
+                "rating":5
+            }
+        }
+    }
+
 
 
 
@@ -50,7 +62,11 @@ async def showBooks():
 @app.post("/create-book")
 async def create_book(book_request:BookRequest):
     new_book = Book(**book_request.model_dump())
-    BOOKS.append(new_book)
+    BOOKS.append(book_id(new_book))
     return BOOKS
 
 
+
+def book_id(book:Book):
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
+    
