@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Body, Path, Query, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional
-
+from starlette import status
 
 class Book:
     id:Optional[int] = None 
@@ -58,19 +58,19 @@ app = FastAPI()
 async def root():
     return {"message":"This is our root router"}
 
-@app.get("/books")
+@app.get("/books",status_code=status.HTTP_200_OK)
 async def showBooks():
     return BOOKS
 
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}",status_code=status.HTTP_200_OK)
 async def book_by_id(book_id:int = Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
     raise HTTPException(status_code=404, detail="Item Not Found!")
 
-@app.get("/books/")
+@app.get("/books/",status_code=status.HTTP_200_OK)
 async def books_by_rating(book_rating:int = Query(gt=0,lt=6)):
     books_to_return = []
     for book in BOOKS:
@@ -83,13 +83,13 @@ async def books_by_rating(book_rating:int = Query(gt=0,lt=6)):
 
 
 
-@app.post("/create-book")
+@app.post("/create-book",status_code=status.HTTP_201_CREATED)
 async def create_book(book_request:BookRequest):
     new_book = Book(**book_request.model_dump())
     BOOKS.append(book_id(new_book))
     return BOOKS
 
-@app.put("/books/update_book")
+@app.put("/books/update_book",status_code=status.HTTP_204_NO_CONTENT)
 async def update_a_book(book:BookRequest):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book.id:
@@ -98,7 +98,7 @@ async def update_a_book(book:BookRequest):
     
 
 
-@app.delete("/books/{book_id}")
+@app.delete("/books/{book_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_a_book(book_id:int = Path(gt=0)):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_id:
@@ -106,7 +106,7 @@ async def delete_a_book(book_id:int = Path(gt=0)):
             break
 
 
-@app.get("/books/publish/")
+@app.get("/books/publish/",status_code=status.HTTP_200_OK)
 async def get_books_by_publish_date(publish_date:int = Query(gt=1999,lt=2030)):
     books_to_return = []
     for book in BOOKS:
